@@ -17,7 +17,7 @@
 #define	INT_MAX	((int)(((unsigned int)-1) >> 1))
 
 #if	!(defined(NAN) || defined(INFINITY))
-static volatile double real_zero __attribute__ ((unused)) = 0.0;
+static volatile double real_zero GCC_ATTR_UNUSED = 0.0;
 #endif
 #ifndef	NAN
 #define	NAN	(real_zero/real_zero)

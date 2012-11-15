@@ -95,9 +95,15 @@ typedef	unsigned int	uint32_t;
 #ifndef	GCC_PRINTFLIKE
 #define	GCC_PRINTFLIKE(fmt,var)	__attribute__((format(printf,fmt,var)))
 #endif
+#ifndef	GCC_ATTR_UNUSED
+#define GCC_ATTR_UNUSED __attribute__ ((unused))
+#endif
 #else
 #ifndef	GCC_PRINTFLIKE
 #define	GCC_PRINTFLIKE(fmt,var)	/* nothing */
+#endif
+#ifndef	GCC_ATTR_UNUSED
+#define GCC_ATTR_UNUSED /* nothing */
 #endif
 #endif
 
