@@ -34,6 +34,7 @@ int get_asn1c_environment_version(void);	/* Run-time version */
  */
 #ifndef	ASN_DEBUG	/* If debugging code is not defined elsewhere... */
 #if	EMIT_ASN_DEBUG == 1	/* And it was asked to emit this code... */
+extern int ASN_DEBUG_INDENT;
 #ifdef	__GNUC__
 #define	ASN_DEBUG(fmt, args...)	do {		\
 		fprintf(stderr, fmt, ##args);	\
@@ -43,9 +44,15 @@ int get_asn1c_environment_version(void);	/* Run-time version */
 #else	/* !__GNUC__ */
 void ASN_DEBUG_f(const char *fmt, ...);
 #define	ASN_DEBUG	ASN_DEBUG_f
+
+#define ASN_DEBUG_INDENT_ADD(n) ASN_DEBUG_INDENT+=(n)
+#define ASN_DEBUG_INDENT_ADD(n) ASN_DEBUG_INDENT-=(n)
+
 #endif	/* __GNUC__ */
 #else	/* EMIT_ASN_DEBUG != 1 */
 static inline void ASN_DEBUG(const char *fmt, ...) { (void)fmt; }
+#define ASN_DEBUG_INDENT_ADD(+4) do {} while(0)
+#define ASN_DEBUG_INDENT_ADD(-4) do {} while(0)
 #endif	/* EMIT_ASN_DEBUG */
 #endif	/* ASN_DEBUG */
 
