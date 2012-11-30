@@ -46,6 +46,36 @@ per_type_encoder_f INTEGER_encode_uper;
  * Some handy conversion routines. *
  ***********************************/
 
+#if 1
+typedef long long asn_longlong;
+typedef unsigned long long asn_ulonglong;
+
+/* LONG_LONG_MAX is not always defined (not if STRICT_ANSI, for example).
+   But we can find it either under the correct ANSI name, or under GNU
+   C's internal name.  */
+#ifdef LONG_LONG_MAX
+# define ASN_LONGLONG_MAX LONG_LONG_MAX
+#else
+# ifdef LLONG_MAX
+#  define ASN_LONGLONG_MAX LLONG_MAX
+# else
+#  ifdef __GNUC__
+#   define ASN_LONGLONG_MAX __LONG_LONG_MAX__
+#  endif
+# endif
+#endif
+
+#define ASN_LONGLONG_FMT "%lld"
+#define ASN_ULONGLONG_FMT "%llu"
+
+#else
+typedef long asn_longlong;
+typedef unsigned long asn_ulonglong;
+#define ASN_LONGLONG_MAX LONG_MAX
+#define ASN_LONGLONG_FMT "%ld"
+#define ASN_ULONGLONG_FMT "%lu"
+#endif
+
 /*
  * Returns 0 if it was possible to convert, -1 otherwise.
  * -1/EINVAL: Mandatory argument missing
@@ -54,8 +84,8 @@ per_type_encoder_f INTEGER_encode_uper;
  */
 int asn_INTEGER2long(const INTEGER_t *i, long *l);
 int asn_INTEGER2ulong(const INTEGER_t *i, unsigned long *l);
-int asn_long2INTEGER(INTEGER_t *i, long l);
-int asn_ulong2INTEGER(INTEGER_t *i, unsigned long l);
+int asn_long2INTEGER(INTEGER_t *i, asn_longlong l);
+int asn_ulong2INTEGER(INTEGER_t *i, asn_ulonglong l);
 
 /*
  * Convert the integer value into the corresponding enumeration map entry.
