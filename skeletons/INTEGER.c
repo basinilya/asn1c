@@ -106,7 +106,7 @@ INTEGER__dump(asn_TYPE_descriptor_t *td, const INTEGER_t *st, asn_app_consume_by
 	char scratch[32];	/* Enough for 64-bit integer */
 	uint8_t *buf = st->buf;
 	uint8_t *buf_end = st->buf + st->size;
-	signed long accum;
+	asn_longlong accum;
 	ssize_t wrote = 0;
 	char *p;
 	int ret;
@@ -140,13 +140,13 @@ INTEGER__dump(asn_TYPE_descriptor_t *td, const INTEGER_t *st, asn_app_consume_by
 				accum = (accum << 8) | *buf;
 		}
 
-		el = INTEGER_map_value2enum(specs, accum);
+		el = INTEGER_map_value2enum(specs, (long)accum);
 		if(el) {
 			scrsize = el->enum_len + 32;
 			scr = (char *)alloca(scrsize);
 			if(plainOrXER == 0)
 				ret = snprintf(scr, scrsize,
-					"%ld (%s)", accum, el->enum_name);
+					ASN_LONGLONG_FMT " (%s)", accum, el->enum_name);
 			else
 				ret = snprintf(scr, scrsize,
 					"<%s/>", el->enum_name);
@@ -160,7 +160,7 @@ INTEGER__dump(asn_TYPE_descriptor_t *td, const INTEGER_t *st, asn_app_consume_by
 			scr = scratch;
 			ret = snprintf(scr, scrsize,
 				(specs && specs->field_unsigned)
-				?"%lu":"%ld", accum);
+				?ASN_ULONGLONG_FMT:ASN_LONGLONG_FMT, accum);
 		}
 		assert(ret > 0 && (size_t)ret < scrsize);
 		return (cb(scr, ret, app_key) < 0) ? -1 : ret;
