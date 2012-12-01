@@ -10,8 +10,6 @@
 #ifdef	HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <io.h>	/* for setmode() */
-#include <fcntl.h> /* O_BINARY */
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>	/* for atoi(3) */
@@ -24,6 +22,9 @@
 #include <string.h>	/* for strerror(3) */
 
 #ifdef _MSC_VER
+#include <io.h>	/* for setmode() */
+#include <fcntl.h> /* O_BINARY */
+
 # define EX_UNAVAILABLE 69
 # define EX_USAGE 64
 # define EX_DATAERR 65
@@ -261,6 +262,7 @@ main(int ac, char *av[]) {
 
 	setvbuf(stdout, 0, _IOLBF, BUFSIZ);
 
+#ifdef _MSC_VER
 	if (-1 == setmode(0, O_BINARY)) {
 		perror("failed to reopen stdin in binary mode");
 		exit(EX_OSERR);
@@ -269,6 +271,7 @@ main(int ac, char *av[]) {
 		perror("failed to reopen stdout in binary mode");
 		exit(EX_OSERR);
 	}
+#endif /* _MSC_VER */
 
 	for(num = 0; num < number_of_iterations; num++) {
 	  int ac_i;
