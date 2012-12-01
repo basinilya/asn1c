@@ -37,7 +37,7 @@ int get_asn1c_environment_version(void);	/* Run-time version */
  */
 #ifndef	ASN_DEBUG	/* If debugging code is not defined elsewhere... */
 #if	EMIT_ASN_DEBUG == 1	/* And it was asked to emit this code... */
-#ifdef	__GNUC__
+
 #ifdef	ASN_THREAD_SAFE
 /* Thread safety requires sacrifice in output indentation:
  * Retain empty definition of ASN_DEBUG_INDENT_ADD. */
@@ -47,6 +47,8 @@ int get_asn1c_environment_version(void);	/* Run-time version */
 int asn_debug_indent;
 #define ASN_DEBUG_INDENT_ADD(i) do { asn_debug_indent += i; } while(0)
 #endif	/* ASN_THREAD_SAFE */
+
+#if defined(__GNUC__)
 #define	ASN_DEBUG(fmt, args...)	do {			\
 		int adi = asn_debug_indent;		\
 		while(adi--) fprintf(stderr, " ");	\
@@ -54,6 +56,16 @@ int asn_debug_indent;
 		fprintf(stderr, " (%s:%d)\n",		\
 			__FILE__, __LINE__);		\
 	} while(0)
+#elif defined(_MSC_VER)
+
+#define	ASN_DEBUG(fmt, ...)	do {			\
+		int adi = asn_debug_indent;		\
+		while(adi--) fprintf(stderr, " ");	\
+		fprintf(stderr, fmt, __VA_ARGS__);		\
+		fprintf(stderr, " (%s:%d)\n",		\
+			(strrchr(__FILE__, '\\')+1), __LINE__);		\
+	} while(0)
+
 #else	/* !__GNUC__ */
 void ASN_DEBUG_f(const char *fmt, ...);
 #define	ASN_DEBUG	ASN_DEBUG_f
