@@ -296,10 +296,13 @@ SET_decode_ber(asn_codec_ctx_t *opt_codec_ctx, asn_TYPE_descriptor_t *td,
 		/*
 		 * Invoke the member fetch routine according to member's type
 		 */
+		ASN_DEBUG("decoding field: %s", elements[edx].name);
+		ASN_DEBUG_INDENT_ADD(+4);
 		rval = elements[edx].type->ber_decoder(opt_codec_ctx,
 				elements[edx].type,
 				memb_ptr2, ptr, LEFT,
 				elements[edx].tag_mode);
+		ASN_DEBUG_INDENT_ADD(-4);
 		switch(rval.code) {
 		case RC_OK:
 			ASN_SET_MKPRESENT((char *)st + specs->pres_offset, edx);
@@ -656,9 +659,12 @@ SET_decode_xer(asn_codec_ctx_t *opt_codec_ctx, asn_TYPE_descriptor_t *td,
 			}
 
 			/* Invoke the inner type decoder, m.b. multiple times */
+			ASN_DEBUG("decoding field: %s", elm->name);
+			ASN_DEBUG_INDENT_ADD(+4);
 			tmprval = elm->type->xer_decoder(opt_codec_ctx,
 					elm->type, memb_ptr2, elm->name,
 					buf_ptr, size);
+			ASN_DEBUG_INDENT_ADD(-4);
 			XER_ADVANCE(tmprval.consumed);
 			if(tmprval.code != RC_OK)
 				RETURN(tmprval.code);

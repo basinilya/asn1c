@@ -258,8 +258,10 @@ CHOICE_decode_ber(asn_codec_ctx_t *opt_codec_ctx, asn_TYPE_descriptor_t *td,
 		/*
 		 * Invoke the member fetch routine according to member's type
 		 */
+		ASN_DEBUG_INDENT_ADD(+4);
 		rval = elm->type->ber_decoder(opt_codec_ctx, elm->type,
 				memb_ptr2, ptr, LEFT, elm->tag_mode);
+		ASN_DEBUG_INDENT_ADD(-4);
 		switch(rval.code) {
 		case RC_OK:
 			break;
