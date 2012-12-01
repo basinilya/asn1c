@@ -22,7 +22,11 @@
 #ifdef	WIN32
 
 #include <malloc.h>
+
+#ifndef _MSC_VER
 #include <stdint.h>
+#endif
+
 #define	 snprintf	_snprintf
 #define	 vsnprintf	_vsnprintf
 
