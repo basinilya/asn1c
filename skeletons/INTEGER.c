@@ -318,7 +318,7 @@ static enum xer_pbd_rval
 INTEGER__xer_body_decode(asn_TYPE_descriptor_t *td, void *sptr, const void *chunk_buf, size_t chunk_size) {
 	INTEGER_t *st = (INTEGER_t *)sptr;
 	long sign = 1;
-	long value;
+	asn_longlong value;
 	const char *lp;
 	const char *lstart = (const char *)chunk_buf;
 	const char *lstop = lstart + chunk_size;
@@ -394,7 +394,7 @@ INTEGER__xer_body_decode(asn_TYPE_descriptor_t *td, void *sptr, const void *chun
 			}
 
 		    {
-			long volatile new_value = value * 10;
+			asn_longlong volatile new_value = value * 10;
 			/* GCC 4.x optimizes (new_value) without `volatile'
 			 * so the following check does not detect overflow. */
 
@@ -407,8 +407,8 @@ INTEGER__xer_body_decode(asn_TYPE_descriptor_t *td, void *sptr, const void *chun
 			if(value < 0) {
 				/* Check whether it is a LONG_MIN */
 				if(sign == -1
-				&& (unsigned long)value
-						== ~((unsigned long)-1 >> 1)) {
+				&& (asn_ulonglong)value
+						== ~((asn_ulonglong)-1 >> 1)) {
 					sign = 1;
 				} else {
 					/* Overflow */
@@ -782,7 +782,7 @@ asn_INTEGER2long(const INTEGER_t *iptr, long *lptr) {
 }
 
 int
-asn_long2INTEGER(INTEGER_t *st, long value) {
+asn_long2INTEGER(INTEGER_t *st, asn_longlong value) {
 	uint8_t *buf, *bp;
 	uint8_t *p;
 	uint8_t *pstart;

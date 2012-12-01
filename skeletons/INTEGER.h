@@ -44,6 +44,14 @@ per_type_encoder_f INTEGER_encode_uper;
  * Some handy conversion routines. *
  ***********************************/
 
+#if 1
+typedef long long asn_longlong;
+typedef unsigned long long asn_ulonglong;
+#else
+typedef long asn_longlong;
+typedef unsigned long asn_ulonglong;
+#endif
+
 /*
  * Returns 0 if it was possible to convert, -1 otherwise.
  * -1/EINVAL: Mandatory argument missing
@@ -51,7 +59,7 @@ per_type_encoder_f INTEGER_encode_uper;
  * -1/ENOMEM: Memory allocation failed (in asn_long2INTEGER()).
  */
 int asn_INTEGER2long(const INTEGER_t *i, long *l);
-int asn_long2INTEGER(INTEGER_t *i, long l);
+int asn_long2INTEGER(INTEGER_t *i, asn_longlong l);
 
 /*
  * Convert the integer value into the corresponding enumeration map entry.
