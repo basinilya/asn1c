@@ -10,12 +10,29 @@
 #ifdef	HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <io.h>	/* for setmode() */
+#include <fcntl.h> /* O_BINARY */
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>	/* for atoi(3) */
-#include <unistd.h>	/* for getopt(3) */
+
+/* for getopt(3) */
+#ifndef _MSC_VER
+#include <unistd.h>
+#endif
+
 #include <string.h>	/* for strerror(3) */
+
+#ifdef _MSC_VER
+# define EX_UNAVAILABLE 69
+# define EX_USAGE 64
+# define EX_DATAERR 65
+# define EX_OSERR 71
+#else
 #include <sysexits.h>	/* for EX_* exit codes */
+#endif
+
+#include <assert.h>	/* for assert(3) */
 #include <errno.h>	/* for errno */
 
 #include <asn_application.h>
@@ -242,7 +259,16 @@ main(int ac, char *av[]) {
 		exit(EX_USAGE);
 	}
 
-	setvbuf(stdout, 0, _IOLBF, 0);
+	setvbuf(stdout, 0, _IOLBF, BUFSIZ);
+
+	if (-1 == setmode(0, O_BINARY)) {
+		perror("failed to reopen stdin in binary mode");
+		exit(EX_OSERR);
+	}
+  if (-1 == setmode(1, O_BINARY)) {
+		perror("failed to reopen stdout in binary mode");
+		exit(EX_OSERR);
+	}
 
 	for(num = 0; num < number_of_iterations; num++) {
 	  int ac_i;
@@ -788,7 +814,7 @@ static int argument_is_stdin(char *av[], int idx) {
 static FILE *argument_to_file(char *av[], int idx) {
 	return argument_is_stdin(av, idx)
 		? stdin
-		: fopen(av[idx], "r");
+		: fopen(av[idx], "rb");
 }
 
 static char *argument_to_name(char *av[], int idx) {
