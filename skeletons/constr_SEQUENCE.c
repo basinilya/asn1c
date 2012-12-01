@@ -409,10 +409,16 @@ SEQUENCE_decode_ber(asn_codec_ctx_t *opt_codec_ctx, asn_TYPE_descriptor_t *td,
 		/*
 		 * Invoke the member fetch routine according to member's type
 		 */
+		ASN_DEBUG("decoding field: %s", elements[edx].name);
+    if (0 == strcmp(elements[edx].name, "information")) {
+      int i = 0;
+    }
+		ASN_DEBUG_INDENT_ADD(+4);
 		rval = elements[edx].type->ber_decoder(opt_codec_ctx,
 				elements[edx].type,
 				memb_ptr2, ptr, LEFT,
 				elements[edx].tag_mode);
+		ASN_DEBUG_INDENT_ADD(-4);
 		ASN_DEBUG("In %s SEQUENCE decoded %d %s of %d "
 			"in %d bytes rval.code %d, size=%d",
 			td->name, edx, elements[edx].type->name,
