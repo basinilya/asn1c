@@ -15,9 +15,7 @@
 #include <stdlib.h>	/* for atoi(3) */
 
 /* for getopt(3) */
-#ifdef _MSC_VER
-#include <XGetopt.h>
-#else
+#ifndef _MSC_VER
 #include <unistd.h>
 #endif
 
